@@ -25,8 +25,13 @@ function useOnScreen(ref, rootMargin = "0px") {
       ([entry]) => setIntersecting(entry.isIntersecting),
       { rootMargin }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => ref.current && observer.unobserve(ref.current);
+    
+    const currentRef = ref.current;
+    if (currentRef) observer.observe(currentRef);
+    
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
   }, [ref, rootMargin]);
   return isIntersecting;
 }
@@ -258,7 +263,7 @@ export default function App() {
             </div>
             
             {/* 3D-ish Visual with Image */}
-            <div className="relative hidden lg:block [perspective:1000px]">
+            <div className="relative hidden lg:block" style={{ perspective: '1000px' }}>
               <Reveal delay={400}>
                 <div className="relative w-full max-w-lg mx-auto">
                    {/* Decorative background blob */}
